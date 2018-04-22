@@ -1,0 +1,140 @@
+package org.firstinspires.ftc.teamcode.Templates.HolonomicOpModes;
+
+import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.hardware.Gamepad;
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+
+/*
+- Name: Holonomic Hardware Map
+- Creator[s]: Talon
+- Date Created: 6/16/17
+- Objective: To create a class that sets up the hardware map for our holonomic robot and has basic
+             functions to reduce redundancies in other programs.
+ */
+
+public class Hardware {
+
+    //Declaring variables
+    public DcMotor fleft, fright, bleft, bright;
+    public BNO055IMU gyro;
+    public double heading;
+    public double dp = 0.4f; //Drive Power (range = 0-1)
+    private HardwareMap hwMap;
+    private Telemetry telemetry;
+    public ElapsedTime time = new ElapsedTime();
+    double currentDrivePower;
+    double jTheta;
+    double jp;
+    double theta;
+    double angleFromDriver = Math.PI;
+    private Gamepad gamepad1;
+    private Gamepad gamepad2;
+
+
+    //Constructor; Put program's hardwaremap first, then telemetry,  then put true if gyro will be used or false if it won't
+    public Hardware(HardwareMap hwmap, Telemetry telem, boolean usesGyro, Gamepad gamepad1, Gamepad gamepad2){
+
+        hwMap = hwmap;
+        telemetry = telem;
+
+        //Signifies that initialization is not yet finished
+        telemetry.addData("Ready to go", false);
+        telemetry.update();
+
+        //Setting up drive motors
+        fleft = hwMap.dcMotor.get("fleft");
+        fright = hwMap.dcMotor.get("fright");
+        bleft = hwMap.dcMotor.get("bleft");
+        bright = hwMap.dcMotor.get("bright");
+        fright.setDirection(DcMotor.Direction.REVERSE);
+        bright.setDirection(DcMotor.Direction.REVERSE);
+
+        //Setting up gyro sensor if necessary
+        if(usesGyro) {
+            gyro = hwMap.get(BNO055IMU.class, "imu");
+            //Setting up data for gyro sensors
+            BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+            parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
+            parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+            parameters.calibrationDataFile = "AdafruitIMUCalibration.json"; // see the calibration sample opmode
+            parameters.loggingEnabled = true;
+            parameters.loggingTag = "IMU";
+            parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
+            gyro.initialize(parameters); //this could also be causingissues but is probably important
+        }
+
+        //Alerts user that initialization is done
+        telemetry.addData("Ready to go", true);
+        telemetry.update();
+    }
+
+    public void drive(double fl, double fr, double bl, double br) {
+        fleft.setPower(ClipValue(fl));
+        fright.setPower(ClipValue(fr));
+        bleft.setPower(ClipValue(bl));
+        bright.setPower(ClipValue(br));
+    }
+
+    public void updateGyro() {
+        //May not have to make negative? Make it so that turning is CCW
+         heading =  gyro.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX).firstAngle;
+         if(heading > 0)
+         {
+             heading = heading +0;
+         }
+         else
+         {
+             heading = heading+2*Math.PI;
+         }
+    }
+
+    double ClipValue(double value) {
+        if(value > dp || value < - dp)
+            return ((Math.abs(value) / value) * dp);
+        else
+            return value;
+    }
+    public void FCDrive()
+    {
+        updateGyro();
+
+        jTheta = (double) Math.atan2(-gamepad1.left_stick_y, gamepad1.left_stick_x);
+        jp = (double) Math.sqrt(gamepad1.left_stick_x * gamepad1.left_stick_x + gamepad1.left_stick_y * gamepad1.left_stick_y);
+        if(jp > 1)
+            jp = 1;
+        theta = (jTheta + angleFromDriver - heading);
+
+        drive(
+                (Math.sin(theta)+Math.cos(theta))*jp/2 - gamepad1.right_stick_x,
+                (Math.sin(theta)-Math.cos(theta))*jp/2 + gamepad1.right_stick_x,
+                (Math.sin(theta)-Math.cos(theta))*jp/2 - gamepad1.right_stick_x,
+                (Math.sin(theta)+Math.cos(theta))*jp/2 + gamepad1.right_stick_x
+        );
+    }
+
+    public void RCDrive()
+    {
+        drive(
+                gamepad1.left_stick_y + gamepad1.left_stick_x - gamepad1.right_stick_x,
+                gamepad1.left_stick_y -gamepad1.left_stick_x + gamepad1.right_stick_x,
+                gamepad1.left_stick_y -gamepad1.left_stick_x - gamepad1.right_stick_x,
+                gamepad1.left_stick_y + gamepad1.left_stick_x + gamepad1.right_stick_x
+        );
+    }
+
+    public void telemetryReadings()
+    {
+        telemetry.addData("Ultra Turbo Mode Activated", gamepad1.right_bumper && gamepad1.left_bumper);
+        telemetry.addData(" Right Joystick X Axis:", gamepad1.right_stick_x);
+        telemetry.addData("Joystick Direction", Math.toDegrees(jTheta));
+        telemetry.addData("Joystick Magnitude", jp);
+        telemetry.addData("Gyro Heading", heading);
+    }
+}
