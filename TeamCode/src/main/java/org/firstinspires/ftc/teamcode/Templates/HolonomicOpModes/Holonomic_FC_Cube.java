@@ -18,13 +18,13 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 @TeleOp(name = "Holonomic FC TeleOp", group = "Holonomic")
 public class Holonomic_FC_Cube extends OpMode
 {
-    Hardware robot;
+    Drive_Hardware robot;
     int multiplier = 3;
 
     @Override
     public void init()
     {
-        robot = new Hardware(hardwareMap, telemetry, true, true, gamepad1);
+        robot = new Drive_Hardware(hardwareMap, telemetry, true, true, gamepad1);
     }
 
     @Override

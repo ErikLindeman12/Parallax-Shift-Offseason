@@ -12,14 +12,14 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 
 /*
-- Name: Holonomic Hardware Map
+- Name: Holonomic Drive_Hardware Map
 - Creator[s]: Talon
 - Date Created: 6/16/17
 - Objective: To create a class that sets up the hardware map for our holonomic robot and has basic
              functions to reduce redundancies in other programs.
  */
 
-public class Hardware {
+public class Drive_Hardware {
 
     //Declaring variables
     public BNO055IMU gyro;
@@ -38,7 +38,7 @@ public class Hardware {
     double DRIVE_POWER = 0.4f;
 
     //Constructor; Put program's hardwaremap first, then telemetry,  then put true if gyro will be used or false if it won't
-    public Hardware(HardwareMap hwmap, Telemetry telem, boolean usesGyro, boolean isFC, Gamepad gamepad1val)
+    public Drive_Hardware(HardwareMap hwmap, Telemetry telem, boolean usesGyro, boolean isFC, Gamepad gamepad1val)
     {
         gamepad1 = gamepad1val;
         hwMap = hwmap;
@@ -100,6 +100,10 @@ public class Hardware {
 
     public void FCDrive(int multiplier)
     {
+        if(gamepad1.y)
+        {
+             angleFromDriver = heading;
+        }
         updateGyro();
 
         jTheta = Math.atan2(-gamepad1.left_stick_y, gamepad1.left_stick_x);

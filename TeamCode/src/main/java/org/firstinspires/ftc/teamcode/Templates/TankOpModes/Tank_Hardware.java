@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 /*
-- Name: Guillero Hardware Map
+- Name: Guillero Drive_Hardware Map
 - Creator[s]: Talon
 - Date Created: 8/16/17
 - Objective: To create a class that sets up the hardware map for Guillermo and has basic

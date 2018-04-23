@@ -16,10 +16,10 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
  */
 
 @TeleOp(name = "Holonomic FC TeleOp", group = "Holonomic")
-public class Holonomic_FC_Sq extends OpMode
+public class Holonomic_RC extends OpMode
 {
     Drive_Hardware robot;
-    int multiplier = 2;
+    int multiplier = 1;
 
     @Override
     public void init()
