@@ -31,6 +31,6 @@ public class Holonomic_FC_Sq extends OpMode
     public void loop()
     {
         robot.FCDrive(multiplier);
-        robot.telemetryReadings();
+        robot.telemetryReadings(false,false,true);
     }
 }
