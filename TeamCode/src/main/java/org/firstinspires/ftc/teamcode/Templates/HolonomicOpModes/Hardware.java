@@ -22,119 +22,140 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 public class Hardware {
 
     //Declaring variables
-    public DcMotor fleft, fright, bleft, bright;
     public BNO055IMU gyro;
-    public double heading;
-    public double dp = 0.4f; //Drive Power (range = 0-1)
+    public DcMotor fleft, fright, bleft, bright;
+    private Gamepad gamepad1;
     private HardwareMap hwMap;
     private Telemetry telemetry;
-    public ElapsedTime time = new ElapsedTime();
-    double currentDrivePower;
-    double jTheta;
-    double jp;
-    double theta;
-    double angleFromDriver = Math.PI;
-    private Gamepad gamepad1;
-    private Gamepad gamepad2;
 
+    boolean FC;
+    double heading;
+    double jp;
+    double jTheta;
+    double theta;
+
+    double angleFromDriver = Math.PI;
+    double DRIVE_POWER = 0.4f;
 
     //Constructor; Put program's hardwaremap first, then telemetry,  then put true if gyro will be used or false if it won't
-    public Hardware(HardwareMap hwmap, Telemetry telem, boolean usesGyro, Gamepad gamepad1, Gamepad gamepad2){
-
+    public Hardware(HardwareMap hwmap, Telemetry telem, boolean usesGyro, boolean isFC, Gamepad gamepad1val)
+    {
+        gamepad1 = gamepad1val;
         hwMap = hwmap;
         telemetry = telem;
 
-        //Signifies that initialization is not yet finished
-        telemetry.addData("Ready to go", false);
-        telemetry.update();
+        FC = isFC;
 
-        //Setting up drive motors
+        telemetryReadings(true,false,false);
+
         fleft = hwMap.dcMotor.get("fleft");
         fright = hwMap.dcMotor.get("fright");
         bleft = hwMap.dcMotor.get("bleft");
         bright = hwMap.dcMotor.get("bright");
+
         fright.setDirection(DcMotor.Direction.REVERSE);
         bright.setDirection(DcMotor.Direction.REVERSE);
 
-        //Setting up gyro sensor if necessary
-        if(usesGyro) {
+        if(usesGyro)
+        {
             gyro = hwMap.get(BNO055IMU.class, "imu");
-            //Setting up data for gyro sensors
             BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
             parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
             parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-            parameters.calibrationDataFile = "AdafruitIMUCalibration.json"; // see the calibration sample opmode
+            parameters.calibrationDataFile = "AdafruitIMUCalibration.json";
             parameters.loggingEnabled = true;
             parameters.loggingTag = "IMU";
             parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
-            gyro.initialize(parameters); //this could also be causingissues but is probably important
+            gyro.initialize(parameters);
         }
 
-        //Alerts user that initialization is done
-        telemetry.addData("Ready to go", true);
-        telemetry.update();
+        telemetryReadings(true,true,false);
     }
 
-    public void drive(double fl, double fr, double bl, double br) {
-        fleft.setPower(ClipValue(fl));
-        fright.setPower(ClipValue(fr));
-        bleft.setPower(ClipValue(bl));
-        bright.setPower(ClipValue(br));
-    }
-
-    public void updateGyro() {
-        //May not have to make negative? Make it so that turning is CCW
-         heading =  gyro.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX).firstAngle;
-         if(heading > 0)
-         {
-             heading = heading +0;
-         }
-         else
-         {
-             heading = heading+2*Math.PI;
-         }
-    }
-
-    double ClipValue(double value) {
-        if(value > dp || value < - dp)
-            return ((Math.abs(value) / value) * dp);
+    double clipValue(double value)
+    {
+        if(value > DRIVE_POWER || value < - DRIVE_POWER)
+            return ((Math.abs(value) / value) * DRIVE_POWER);
         else
             return value;
     }
-    public void FCDrive()
+
+    public void drive(double fl, double fr, double bl, double br) {
+        fleft.setPower(clipValue(fl));
+        fright.setPower(clipValue(fr));
+        bleft.setPower(clipValue(bl));
+        bright.setPower(clipValue(br));
+    }
+
+    public void updateGyro()
+    {
+         heading =  gyro.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX).firstAngle;
+
+         if(heading > 0)
+             heading = heading +0;
+         else
+             heading = heading+2*Math.PI;
+    }
+
+
+    public void FCDrive(int multiplier)
     {
         updateGyro();
 
-        jTheta = (double) Math.atan2(-gamepad1.left_stick_y, gamepad1.left_stick_x);
-        jp = (double) Math.sqrt(gamepad1.left_stick_x * gamepad1.left_stick_x + gamepad1.left_stick_y * gamepad1.left_stick_y);
+        jTheta = Math.atan2(-gamepad1.left_stick_y, gamepad1.left_stick_x);
+        jp = Math.sqrt(gamepad1.left_stick_x * gamepad1.left_stick_x + gamepad1.left_stick_y * gamepad1.left_stick_y);
         if(jp > 1)
             jp = 1;
         theta = (jTheta + angleFromDriver - heading);
 
+        double fl = (Math.sin(theta)+Math.cos(theta))*jp/2 - gamepad1.right_stick_x;
+        double fr = (Math.sin(theta)-Math.cos(theta))*jp/2 + gamepad1.right_stick_x;
+        double bl = (Math.sin(theta)-Math.cos(theta))*jp/2 - gamepad1.right_stick_x;
+        double br = (Math.sin(theta)+Math.cos(theta))*jp/2 + gamepad1.right_stick_x;
+
         drive(
-                (Math.sin(theta)+Math.cos(theta))*jp/2 - gamepad1.right_stick_x,
-                (Math.sin(theta)-Math.cos(theta))*jp/2 + gamepad1.right_stick_x,
-                (Math.sin(theta)-Math.cos(theta))*jp/2 - gamepad1.right_stick_x,
-                (Math.sin(theta)+Math.cos(theta))*jp/2 + gamepad1.right_stick_x
+                Math.pow(fl,multiplier),
+                Math.pow(fr,multiplier),
+                Math.pow(bl,multiplier),
+                Math.pow(br,multiplier)
         );
     }
 
-    public void RCDrive()
+    public void RCDrive(int multiplier)
     {
+        double fl = gamepad1.left_stick_y + gamepad1.left_stick_x - gamepad1.right_stick_x;
+        double fr = gamepad1.left_stick_y -gamepad1.left_stick_x + gamepad1.right_stick_x;
+        double bl = gamepad1.left_stick_y -gamepad1.left_stick_x - gamepad1.right_stick_x;
+        double br = gamepad1.left_stick_y + gamepad1.left_stick_x + gamepad1.right_stick_x;
+
         drive(
-                gamepad1.left_stick_y + gamepad1.left_stick_x - gamepad1.right_stick_x,
-                gamepad1.left_stick_y -gamepad1.left_stick_x + gamepad1.right_stick_x,
-                gamepad1.left_stick_y -gamepad1.left_stick_x - gamepad1.right_stick_x,
-                gamepad1.left_stick_y + gamepad1.left_stick_x + gamepad1.right_stick_x
+                Math.pow(fl,multiplier),
+                Math.pow(fr,multiplier),
+                Math.pow(bl,multiplier),
+                Math.pow(br,multiplier)
         );
     }
 
-    public void telemetryReadings()
+    public void telemetryReadings(boolean Init,boolean Ready,boolean Driving)
     {
-        telemetry.addData("Ultra Turbo Mode Activated", gamepad1.right_bumper && gamepad1.left_bumper);
-        telemetry.addData(" Right Joystick X Axis:", gamepad1.right_stick_x);
-        telemetry.addData("Joystick Direction", Math.toDegrees(jTheta));
-        telemetry.addData("Joystick Magnitude", jp);
-        telemetry.addData("Gyro Heading", heading);
+        if(Init)
+        {
+            if (Ready)
+                telemetry.addData("Ready to go", true);
+            else
+                telemetry.addData("Ready to go", false);
+        }
+        if(Driving)
+        {
+            telemetry.addData(" Right Joystick X Axis:", gamepad1.right_stick_x);
+            telemetry.addData(" Left Joystick Y Axis:", gamepad1.left_stick_y);
+            telemetry.addData(" Left Joystick X Axis:", gamepad1.left_stick_x);
+            if (FC) {
+                telemetry.addData("Joystick Direction", Math.toDegrees(jTheta));
+                telemetry.addData("Joystick Magnitude", jp);
+                telemetry.addData("Gyro Heading", heading);
+            }
+        }
+        telemetry.update();
     }
 }
