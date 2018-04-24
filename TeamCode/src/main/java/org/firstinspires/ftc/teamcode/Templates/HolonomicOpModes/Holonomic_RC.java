@@ -24,7 +24,7 @@ public class Holonomic_RC extends OpMode
     @Override
     public void init()
     {
-        robot = new Drive_Hardware(hardwareMap, telemetry, true, true, gamepad1);
+        robot = new Drive_Hardware(hardwareMap, telemetry, false, false, gamepad1);
     }
 
     @Override
