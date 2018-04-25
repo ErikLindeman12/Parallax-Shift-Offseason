@@ -22,6 +22,7 @@ public class FCTeleOp extends OpMode
 {
     RobotClass robot;
     int multiplier = 1;
+    boolean firstTime = true;
 
     @Override
     public void init()
@@ -32,6 +33,13 @@ public class FCTeleOp extends OpMode
     @Override
     public void loop()
     {
+        if(firstTime == true || gamepad1.start)
+        {
+            robot.jewelclass.Initialize();
+            robot.intakeclass.deployIntake();
+            firstTime = false;
+        }
+
         robot.driveclass.FCDrive(multiplier);
         robot.intakeclass.intake();
         robot.flipperclass.flipper();

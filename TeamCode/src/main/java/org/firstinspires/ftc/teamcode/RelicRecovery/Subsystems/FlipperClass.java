@@ -11,14 +11,14 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class FlipperClass
 {
-    private Hardware_Class hardwaremap;
+    private HardwareClass hardwaremap;
     private Gamepad gamepad1;
 
     public static final double FLIPPER_POWER = -.45;
 
     public FlipperClass(HardwareMap hwmap, Telemetry telem, boolean usesGyro, Gamepad gamepad1val)
     {
-        hardwaremap = new Hardware_Class(hwmap, telem, usesGyro, gamepad1val);
+        hardwaremap = new HardwareClass(hwmap, telem, usesGyro, gamepad1val);
         gamepad1 = gamepad1val;
     }
 

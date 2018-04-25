@@ -11,14 +11,14 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 /*
-- Name: Holonomic Hardware_Class Map
+- Name: Holonomic HardwareClass Map
 - Creator[s]: Talon
 - Date Created: 6/16/17
 - Objective: To create a class that sets up the hardware map for our holonomic robot and has basic
              functions to reduce redundancies in other programs.
  */
 
-public class Hardware_Class
+public class HardwareClass
 {
     //Declaring variables
     public BNO055IMU gyro;
@@ -29,7 +29,7 @@ public class Hardware_Class
     private Telemetry telemetry;
 
     //Constructor; Put program's hardwaremap first, then telemetry,  then put true if gyro will be used or false if it won't
-    public Hardware_Class(HardwareMap hwmap, Telemetry telem, boolean usesGyro, Gamepad gamepad1val)
+    public HardwareClass(HardwareMap hwmap, Telemetry telem, boolean usesGyro, Gamepad gamepad1val)
     {
         hwMap = hwmap;
         telemetry = telem;

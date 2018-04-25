@@ -11,14 +11,14 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class IntakeClass
 {
-    private Hardware_Class hardwaremap;
+    private HardwareClass hardwaremap;
     private Gamepad gamepad1;
 
     public static final double INTAKE_POWER = -1;
 
     public IntakeClass(HardwareMap hwmap, Telemetry telem, boolean usesGyro, Gamepad gamepad1val)
     {
-        hardwaremap = new Hardware_Class(hwmap, telem, usesGyro, gamepad1val);
+        hardwaremap = new HardwareClass(hwmap, telem, usesGyro, gamepad1val);
         gamepad1 = gamepad1val;
     }
 

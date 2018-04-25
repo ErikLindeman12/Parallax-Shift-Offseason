@@ -15,7 +15,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 public class DriveClass
 {
-    private Hardware_Class hardwaremap;
+    private HardwareClass hardwaremap;
     private Telemetry telemetry;
     private Gamepad gamepad1;
     double heading;
@@ -30,7 +30,7 @@ public class DriveClass
 
     public DriveClass(HardwareMap hwmap, Telemetry telem, boolean usesGyro, boolean isFC, Gamepad gamepad1val, double angle)
     {
-        hardwaremap = new Hardware_Class(hwmap, telem, usesGyro, gamepad1val);
+        hardwaremap = new HardwareClass(hwmap, telem, usesGyro, gamepad1val);
         telemetry = telem;
         FC = isFC;
         gamepad1 = gamepad1val;
