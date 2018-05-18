@@ -18,14 +18,14 @@ public class DriveClass
     private HardwareClass hardwaremap;
     private Telemetry telemetry;
     private Gamepad gamepad1;
-    double heading;
-    double jp;
-    double jTheta;
-    double theta;
-    boolean FC;
+    public double heading;
+    private double jp;
+    private double jTheta;
+    private double theta;
+    private boolean FC;
 
-    double angleFromDriver;
-    double DRIVE_POWER = 0.4f;
+    private double angleFromDriver;
+    private double DRIVE_POWER = 0.4f;
 
 
     public DriveClass(HardwareMap hwmap, Telemetry telem, boolean usesGyro, boolean isFC, Gamepad gamepad1val, double angle)
@@ -38,7 +38,7 @@ public class DriveClass
     }
 
 
-    double clipValue(double value)
+    private double clipValue(double value)
     {
         if(value > DRIVE_POWER || value < - DRIVE_POWER)
             return ((Math.abs(value) / value) * DRIVE_POWER);
@@ -143,5 +143,29 @@ public class DriveClass
             telemetry.addData("Gyro Heading", heading);
         }
         telemetry.update();
+    }
+
+    public void runPID(double angle){
+        double error = 0;
+        boolean begin = true;
+        double LastTime = System.currentTimeMillis();
+        double LastError = 0;
+        double Integral = 0;
+        double Derivative;
+        double currentDrivePower;
+        while(error>.1 || begin){
+            if(begin)
+                begin = false;
+            updateGyro();
+            error = angle-heading;
+            double Time = System.currentTimeMillis()-LastTime;
+            Integral += error * Time;
+            Derivative = (error-LastError)/Time;
+            currentDrivePower= error * .02 + Integral * 0 + Derivative * 0;
+            LastTime = System.currentTimeMillis();
+            LastError = error;
+            drive(-currentDrivePower,currentDrivePower,-currentDrivePower,currentDrivePower);
+        }
+
     }
 }
