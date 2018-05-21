@@ -15,6 +15,7 @@ public class RobotClass
     public IntakeClass intakeclass;
     public FlipperClass flipperclass;
     public JewelClass jewelclass;
+    public HardwareClass hardwareclass;
 
     public RobotClass(HardwareMap hwmap, Telemetry telem, boolean usesGyro, boolean isFC, Gamepad gamepad1val, double angle)
     {
@@ -22,5 +23,6 @@ public class RobotClass
        intakeclass = new IntakeClass(hwmap,telem,usesGyro,gamepad1val);
        flipperclass = new FlipperClass(hwmap,telem,usesGyro,gamepad1val);
        jewelclass = new JewelClass(hwmap,telem,usesGyro,gamepad1val);
+       hardwareclass = new HardwareClass(hwmap,telem,usesGyro,gamepad1val);
     }
 }

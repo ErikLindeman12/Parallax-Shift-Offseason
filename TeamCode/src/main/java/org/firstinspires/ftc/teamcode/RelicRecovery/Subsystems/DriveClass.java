@@ -23,8 +23,19 @@ public class DriveClass
     private double jTheta;
     private double theta;
     private boolean FC;
+    double error;
+    boolean begin;
+    double LastTime;
+    double LastError;
+    double Integral;
+    double Derivative;
+    double currentDrivePower;
+    double Time;
+    double KP = .02;
+    double KI = 0;
+    double KD = 0;
 
-    private double angleFromDriver;
+    public double angleFromDriver;
     private double DRIVE_POWER = 0.4f;
 
 
@@ -145,23 +156,21 @@ public class DriveClass
         telemetry.update();
     }
 
-    public void runPID(double angle){
-        double error = 0;
-        boolean begin = true;
-        double LastTime = System.currentTimeMillis();
-        double LastError = 0;
-        double Integral = 0;
-        double Derivative;
-        double currentDrivePower;
+    public void turnPID(double angle){
+        error = 0;
+        begin = true;
+        LastTime = System.currentTimeMillis();
+        LastError = 0;
+        Integral = 0;
         while(error>.1 || begin){
             if(begin)
                 begin = false;
             updateGyro();
             error = angle-heading;
-            double Time = System.currentTimeMillis()-LastTime;
+            Time = System.currentTimeMillis()-LastTime;
             Integral += error * Time;
             Derivative = (error-LastError)/Time;
-            currentDrivePower= error * .02 + Integral * 0 + Derivative * 0;
+            currentDrivePower= error * KP + Integral * KI + Derivative * KD;
             LastTime = System.currentTimeMillis();
             LastError = error;
             drive(-currentDrivePower,currentDrivePower,-currentDrivePower,currentDrivePower);
