@@ -21,7 +21,7 @@ import org.firstinspires.ftc.teamcode.RelicRecovery.Subsystems.RobotClass;
 public class FCTeleOpFarBlue extends OpMode
 {
     RobotClass robot;
-    int multiplier = 1;
+    int multiplier = 2;
     boolean firstTime = true;
 
     @Override
@@ -41,8 +41,8 @@ public class FCTeleOpFarBlue extends OpMode
         }
 
         robot.driveclass.FCDrive(multiplier);
-        robot.intakeclass.intake();
-        robot.flipperclass.flipper();
+        //robot.intakeclass.intake();
+        //robot.flipperclass.flipper();
         robot.driveclass.telemetryReadings();
     }
 }
