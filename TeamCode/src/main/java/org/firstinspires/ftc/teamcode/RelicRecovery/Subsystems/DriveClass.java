@@ -58,10 +58,10 @@ public class DriveClass
     }
 
     public void drive(double fl, double fr, double bl, double br) {
-        hardwaremap.fleft.setPower(clipValue(fl));
-        hardwaremap.fright.setPower(clipValue(fr));
-        hardwaremap.bleft.setPower(clipValue(bl));
-        hardwaremap.bright.setPower(clipValue(br));
+        hardwaremap.frontLeft.setPower(clipValue(fl));
+        hardwaremap.frontRight.setPower(clipValue(fr));
+        hardwaremap.backLeft.setPower(clipValue(bl));
+        hardwaremap.backRight.setPower(clipValue(br));
     }
 
     public void updateGyro()
@@ -118,27 +118,27 @@ public class DriveClass
     }
 
     public void brake() {
-        hardwaremap.fleft.setPower(0);
-        hardwaremap.fright.setPower(0);
-        hardwaremap.bleft.setPower(0);
-        hardwaremap.bright.setPower(0);
+        hardwaremap.frontLeft.setPower(0);
+        hardwaremap.frontRight.setPower(0);
+        hardwaremap.backLeft.setPower(0);
+        hardwaremap.backRight.setPower(0);
     }
 
     public void setDriveEncoders(double powerfl, double powerfr, double powerbl, double powerbr, int fl, int fr, int bl, int br) {
-        hardwaremap.fleft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        hardwaremap.fright.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        hardwaremap.bleft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        hardwaremap.bright.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        hardwaremap.frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        hardwaremap.frontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        hardwaremap.backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        hardwaremap.backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        hardwaremap.fleft.setTargetPosition(fl + hardwaremap.fleft.getCurrentPosition());
-        hardwaremap.fright.setTargetPosition(fr + hardwaremap.fright.getCurrentPosition());
-        hardwaremap.bleft.setTargetPosition(bl + hardwaremap.bleft.getCurrentPosition());
-        hardwaremap.bright.setTargetPosition(br + hardwaremap.bright.getCurrentPosition());
+        hardwaremap.frontLeft.setTargetPosition(fl + hardwaremap.frontLeft.getCurrentPosition());
+        hardwaremap.frontRight.setTargetPosition(fr + hardwaremap.frontRight.getCurrentPosition());
+        hardwaremap.backLeft.setTargetPosition(bl + hardwaremap.backLeft.getCurrentPosition());
+        hardwaremap.backRight.setTargetPosition(br + hardwaremap.backRight.getCurrentPosition());
 
-        hardwaremap.fleft.setPower(powerfl);
-        hardwaremap.fright.setPower(powerfr);
-        hardwaremap.bleft.setPower(powerbl);
-        hardwaremap.bright.setPower(powerbr);
+        hardwaremap.frontLeft.setPower(powerfl);
+        hardwaremap.frontRight.setPower(powerfr);
+        hardwaremap.backLeft.setPower(powerbl);
+        hardwaremap.backRight.setPower(powerbr);
     }
 
     public void telemetryReadings()

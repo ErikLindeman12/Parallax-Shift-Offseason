@@ -25,4 +25,12 @@ public class RobotClass
        jewelclass = new JewelClass(hwmap,telem,usesGyro,gamepad1val);
        hardwareclass = new HardwareClass(hwmap,telem,usesGyro,gamepad1val);
     }
+    public void initialize(){
+    flipperclass.initialize();
+    jewelclass.initialize();
+    }
+    public void resetServos(){
+        flipperclass.reset();
+        jewelclass.reset();
+    }
 }

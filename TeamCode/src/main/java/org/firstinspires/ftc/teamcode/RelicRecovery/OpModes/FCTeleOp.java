@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.RelicRecovery.OpModes;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -16,7 +17,7 @@ import org.firstinspires.ftc.teamcode.RelicRecovery.Subsystems.RobotClass;
 - Uniqueness:
 - Possible Improvements:
  */
-
+@Disabled
 @TeleOp(name = "Holonomic FC TeleOp", group = "Holonomic")
 public class FCTeleOp extends OpMode
 {
@@ -35,14 +36,13 @@ public class FCTeleOp extends OpMode
     {
         if(firstTime == true || gamepad1.start)
         {
-            robot.jewelclass.Initialize();
-            robot.intakeclass.deployIntake();
+            robot.initialize();
             firstTime = false;
         }
 
         robot.driveclass.FCDrive(multiplier);
-        //robot.intakeclass.intake();
-        //robot.flipperclass.flipper();
+        robot.intakeclass.intake();
+        robot.flipperclass.flipper();
         robot.driveclass.telemetryReadings();
     }
 }

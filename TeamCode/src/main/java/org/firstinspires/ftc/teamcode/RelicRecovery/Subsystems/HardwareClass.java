@@ -22,8 +22,8 @@ public class HardwareClass
 {
     //Declaring variables
     public BNO055IMU gyro;
-    public DcMotor fleft, fright, bleft, bright, lintake, rintake, flipper;
-    public Servo leftIntakeArm, rightIntakeArm, topServo, bottomServo;
+    public DcMotor frontLeft, frontRight, backLeft, backRight, leftIntake, rightIntake, flipperMotor;
+    public Servo flipperServo, topServo, bottomServo,rightClamp,leftClamp;
     public ColorSensor colorSensor;
     private HardwareMap hwMap;
     private Telemetry telemetry;
@@ -36,25 +36,26 @@ public class HardwareClass
 
         telemetryReadings(true,false);
 
-        fleft = hwMap.dcMotor.get("fleft");
-        fright = hwMap.dcMotor.get("fright");
-        bleft = hwMap.dcMotor.get("bleft");
-        bright = hwMap.dcMotor.get("bright");
-        lintake = hwMap.dcMotor.get("lintake");
-        rintake = hwMap.dcMotor.get("rintake");
-        flipper = hwMap.dcMotor.get("flipper");
+        frontLeft = hwMap.dcMotor.get("frontLeft");
+        frontRight = hwMap.dcMotor.get("frontRight");
+        backLeft = hwMap.dcMotor.get("backLeft");
+        backRight = hwMap.dcMotor.get("backRight");
+        leftIntake = hwMap.dcMotor.get("leftIntake");
+        rightIntake = hwMap.dcMotor.get("rightIntake");
+        flipperMotor = hwMap.dcMotor.get("flipperMotor");
+        
 
-        fright.setDirection(DcMotor.Direction.REVERSE);
-        bright.setDirection(DcMotor.Direction.REVERSE);
+        frontRight.setDirection(DcMotor.Direction.REVERSE);
+        backRight.setDirection(DcMotor.Direction.REVERSE);
 
-        leftIntakeArm= hwMap.servo.get("left intake arm");
-        rightIntakeArm = hwMap.servo.get("right intake arm");
-        bottomServo = hwMap.servo.get("bottom servo");
-        topServo = hwMap.servo.get("top servo");
+        flipperServo = hwMap.servo.get("flipperServo");
+        bottomServo = hwMap.servo.get("bottomServo");
+        topServo = hwMap.servo.get("topServo");
+        leftClamp = hwMap.servo.get("leftClamp");
+        rightClamp = hwMap.servo.get("rightClamp");
+        leftClamp.setDirection(Servo.Direction.REVERSE);
 
-        rightIntakeArm.setDirection(Servo.Direction.REVERSE);
-
-        colorSensor = hwMap.colorSensor.get("color sensor");
+        colorSensor = hwMap.colorSensor.get("colorSensor");
 
         if(usesGyro)
         {

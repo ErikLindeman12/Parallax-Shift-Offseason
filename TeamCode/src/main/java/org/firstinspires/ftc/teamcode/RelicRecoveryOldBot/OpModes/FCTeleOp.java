@@ -1,7 +1,9 @@
-package org.firstinspires.ftc.teamcode.Templates.HolonomicOpModes;
+package org.firstinspires.ftc.teamcode.RelicRecoveryOldBot.OpModes;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+
+import org.firstinspires.ftc.teamcode.RelicRecoveryOldBot.Subsystems.RobotClass;
 
 /*
 - Name:
@@ -16,21 +18,20 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
  */
 
 @TeleOp(name = "Holonomic FC TeleOp", group = "Holonomic")
-public class Holonomic_RC extends OpMode
+public class FCTeleOp extends OpMode
 {
-    Drive_Hardware robot;
-    int multiplier = 1;
+    RobotClass robot;
+    int multiplier = 2;
 
     @Override
     public void init()
     {
-        robot = new Drive_Hardware(hardwareMap, telemetry, true, true, gamepad1);
+        robot = new RobotClass(hardwareMap,true, gamepad1,0);
     }
 
     @Override
     public void loop()
     {
-        robot.FCDrive(multiplier);
-        robot.telemetryReadings(false,false,true);
+        robot.driveclass.FCDrive(multiplier);
     }
 }

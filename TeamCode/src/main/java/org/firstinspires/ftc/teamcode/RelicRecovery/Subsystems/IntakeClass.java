@@ -13,6 +13,9 @@ public class IntakeClass
 {
     private HardwareClass hardwaremap;
     private Gamepad gamepad1;
+    private double rightpower;
+    private double leftpower;
+
 
     public static final double INTAKE_POWER = -1;
 
@@ -22,48 +25,31 @@ public class IntakeClass
         gamepad1 = gamepad1val;
     }
 
-    public void deployIntake()
-    {
-        hardwaremap.leftIntakeArm.setPosition(.755);
-        hardwaremap.rightIntakeArm.setPosition(.845);
-    }
-
-    public void farOut()
-    {
-        hardwaremap.leftIntakeArm.setPosition(.9);
-        hardwaremap.rightIntakeArm.setPosition(.9);
-    }
 
     public void intake()
     {
-        if (gamepad1.x)
-            farOut();
-        if (gamepad1.b)
-            deployIntake();
-
         if (gamepad1.left_bumper)
         {
-            double leftpower = INTAKE_POWER;
-            double rightpower = INTAKE_POWER;
-            runIntake(leftpower,rightpower);
+            leftpower = INTAKE_POWER;
+            rightpower = INTAKE_POWER;
         }
         else if (gamepad1.right_bumper)
         {
-            double leftpower = -INTAKE_POWER;
-            double rightpower = -INTAKE_POWER;
-            runIntake(leftpower,rightpower);
+            leftpower = -INTAKE_POWER;
+            rightpower = -INTAKE_POWER;
         }
         else
         {
-            double leftpower = 0.15 * (gamepad1.left_trigger - gamepad1.right_trigger);
-            double rightpower = 0.15 * ( - gamepad1.left_trigger + gamepad1.right_trigger);
-            runIntake(leftpower,rightpower);
+            leftpower = 0;
+            rightpower = 0;
+
         }
+        runIntake(leftpower,rightpower);
     }
 
     public void runIntake(double leftPower, double rightPower)
     {
-        hardwaremap.lintake.setPower(leftPower);
-        hardwaremap.rintake.setPower(rightPower);
+        hardwaremap.leftIntake.setPower(leftPower);
+        hardwaremap.rightIntake.setPower(rightPower);
     }
 }

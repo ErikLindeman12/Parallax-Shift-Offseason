@@ -20,7 +20,7 @@ public class Drive_Functions
     private double currentDrivePower;
     private double Time;
     private double theta;
-    private double KP = .02;
+    private double KP = .5;
     private double KI = 0;
     private double KD = 0;
 
@@ -57,19 +57,19 @@ public class Drive_Functions
         double fr = (Math.sin(theta)-Math.cos(theta))*power/2;
         double bl = (Math.sin(theta)-Math.cos(theta))*power/2;
         double br = (Math.sin(theta)+Math.cos(theta))*power/2;
-        robot.hardwareclass.fleft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.hardwareclass.fright.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.hardwareclass.bleft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.hardwareclass.bright.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.hardwareclass.frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.hardwareclass.frontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.hardwareclass.backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.hardwareclass.backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        robot.hardwareclass.fleft.setTargetPosition((int)(distance*fl) + robot.hardwareclass.fleft.getCurrentPosition());
-        robot.hardwareclass.fleft.setPower(fl*power);
-        robot.hardwareclass.fright.setTargetPosition((int)(distance*fr) + robot.hardwareclass.fright.getCurrentPosition());
-        robot.hardwareclass.fright.setPower(fr*power);
-        robot.hardwareclass.bleft.setTargetPosition((int)(distance*bl) + robot.hardwareclass.bleft.getCurrentPosition());
-        robot.hardwareclass.bleft.setPower(bl*power);
-        robot.hardwareclass.bright.setTargetPosition((int)(distance*br) + robot.hardwareclass.bright.getCurrentPosition());
-        robot.hardwareclass.bright.setPower(br*power);
+        robot.hardwareclass.frontLeft.setTargetPosition((int)(distance*fl) + robot.hardwareclass.frontLeft.getCurrentPosition());
+        robot.hardwareclass.frontLeft.setPower(fl*power);
+        robot.hardwareclass.frontRight.setTargetPosition((int)(distance*fr) + robot.hardwareclass.frontRight.getCurrentPosition());
+        robot.hardwareclass.frontRight.setPower(fr*power);
+        robot.hardwareclass.backLeft.setTargetPosition((int)(distance*bl) + robot.hardwareclass.backLeft.getCurrentPosition());
+        robot.hardwareclass.backLeft.setPower(bl*power);
+        robot.hardwareclass.backRight.setTargetPosition((int)(distance*br) + robot.hardwareclass.backRight.getCurrentPosition());
+        robot.hardwareclass.backRight.setPower(br*power);
     }
     public void testAccel(double acceleration){
 
