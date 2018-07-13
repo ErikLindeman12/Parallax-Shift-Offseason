@@ -13,7 +13,7 @@ public class RobotClass
 {
     public DriveFunctionClass driveclass;
 
-    public RobotClass(HardwareMap hwmap, boolean isFC, Gamepad gamepad, double angle) {
-        driveclass = new DriveFunctionClass(hwmap,isFC, gamepad, angle);
+    public RobotClass(HardwareMap hwmap,Gamepad gamepad,Telemetry telemetry) {
+        driveclass = new DriveFunctionClass(hwmap,gamepad,telemetry);
     }
 }

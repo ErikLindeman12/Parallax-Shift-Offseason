@@ -16,7 +16,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 
 public class DriveClass {
     private HardwareMap hardwareMap;
-    private Telemetry telemetry;
+    public Telemetry telemetry;
     private Gamepad gamepad;
     public DcMotor frontRight, frontLeft, backRight, backLeft;
     public BNO055IMU gyro;
@@ -24,9 +24,7 @@ public class DriveClass {
     private double jp;
     private double jTheta;
     private double theta;
-    private boolean FC;
     double error;
-    boolean begin;
     double LastTime;
     double LastError;
     double Integral;
@@ -41,11 +39,10 @@ public class DriveClass {
     private double DRIVE_POWER = 1.0f;
 
 
-    public DriveClass(HardwareMap hwmap, boolean isFC, Gamepad gamepad, double angle) {
+    public DriveClass(HardwareMap hwmap,Gamepad gamepad,Telemetry telemetry) {
         this.hardwareMap = hwmap;
-        this.FC = isFC;
         this.gamepad = gamepad;
-        this.angleFromDriver = angle;
+        this.telemetry = telemetry;
 
         frontLeft = hardwareMap.dcMotor.get("frontLeft");
         frontRight = hardwareMap.dcMotor.get("frontRight");
@@ -80,10 +77,12 @@ public class DriveClass {
             heading = heading + 0;
         else
             heading = heading + 2 * Math.PI;
+        telemetry.addData("Gyro Heading",heading);
     }
 
 
-    public void FCDrive(int multiplier) {
+    public void FCDrive(int multiplier, double angleFromDriver) {
+        this.angleFromDriver = angleFromDriver;
         if (gamepad.y) {
             angleFromDriver = heading;
         }
@@ -148,40 +147,6 @@ public class DriveClass {
         backRight.setPower(powerbr);
     }
 
-    public void telemetryReadings() {
-        telemetry.addData(" Right Joystick X Axis:", gamepad.right_stick_x);
-        telemetry.addData(" Left Joystick Y Axis:", gamepad.left_stick_y);
-        telemetry.addData(" Left Joystick X Axis:", gamepad.left_stick_x);
-
-        if (FC) {
-            telemetry.addData("Joystick Direction", Math.toDegrees(jTheta));
-            telemetry.addData("Joystick Magnitude", jp);
-            telemetry.addData("Gyro Heading", heading);
-        }
-        telemetry.update();
-    }
-
-    public void turnPID(double angle) {
-        error = 0;
-        begin = true;
-        LastTime = System.currentTimeMillis();
-        LastError = 0;
-        Integral = 0;
-        while (error > .1 || begin) {
-            if (begin)
-                begin = false;
-            updateGyro();
-            error = angle - heading;
-            Time = System.currentTimeMillis() - LastTime;
-            Integral += error * Time;
-            Derivative = (error - LastError) / Time;
-            currentDrivePower = error * KP + Integral * KI + Derivative * KD;
-            LastTime = System.currentTimeMillis();
-            LastError = error;
-            drive(-currentDrivePower, currentDrivePower, -currentDrivePower, currentDrivePower);
-        }
-
-    }
 
     public void InitializeGyro() {
         gyro = hardwareMap.get(BNO055IMU.class, "imu");

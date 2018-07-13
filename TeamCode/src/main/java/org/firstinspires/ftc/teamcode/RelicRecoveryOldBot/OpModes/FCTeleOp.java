@@ -26,12 +26,12 @@ public class FCTeleOp extends OpMode
     @Override
     public void init()
     {
-        robot = new RobotClass(hardwareMap,true, gamepad1,0);
+        robot = new RobotClass(hardwareMap,gamepad1, telemetry);
     }
 
     @Override
     public void loop()
     {
-        robot.driveclass.FCDrive(multiplier);
+        robot.driveclass.FCDrive(multiplier,0);
     }
 }
