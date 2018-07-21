@@ -15,29 +15,21 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
  */
 
 public class DriveClass {
+
     private HardwareMap hardwareMap;
     public Telemetry telemetry;
+
     private Gamepad gamepad;
     public DcMotor frontRight, frontLeft, backRight, backLeft;
     public BNO055IMU gyro;
+
+    private double jp,jTheta,theta;
+    private double leftY,leftX,rightX;
+    private double angleFromDriver;
     public double heading;
-    private double jp;
-    private double jTheta;
-    private double theta;
-    double error;
-    double LastTime;
-    double LastError;
-    double Integral;
-    double Derivative;
-    double currentDrivePower;
-    double Time;
-    double KP = .5;
-    double KI = 0;
-    double KD = 0;
+    public double DRIVE_POWER = 1.0f;
 
-    public double angleFromDriver;
-    private double DRIVE_POWER = 1.0f;
-
+    private boolean begin = true;
 
     public DriveClass(HardwareMap hwmap,Gamepad gamepad,Telemetry telemetry) {
         this.hardwareMap = hwmap;
@@ -49,9 +41,9 @@ public class DriveClass {
         backLeft = hardwareMap.dcMotor.get("backLeft");
         backRight = hardwareMap.dcMotor.get("backRight");
 
-        frontRight.setDirection(DcMotor.Direction.REVERSE);
-        backRight.setDirection(DcMotor.Direction.REVERSE);
-        
+        frontLeft.setDirection(DcMotor.Direction.REVERSE);
+        backLeft.setDirection(DcMotor.Direction.REVERSE);
+
         InitializeGyro();
     }
 
@@ -82,15 +74,24 @@ public class DriveClass {
 
 
     public void FCDrive(int multiplier, double angleFromDriver) {
-        this.angleFromDriver = angleFromDriver;
-        if (gamepad.y) {
-            angleFromDriver = heading;
-        }
+        if(begin)
+            this.angleFromDriver = angleFromDriver;
+
         updateGyro();
 
-        double rightX = Math.signum(gamepad.right_stick_x)*Math.pow(gamepad.right_stick_x,multiplier);
-        double leftX = Math.signum(gamepad.left_stick_x)*Math.pow(gamepad.left_stick_x,multiplier);
-        double leftY = Math.signum(gamepad.left_stick_y)*Math.pow(gamepad.left_stick_y,multiplier);
+        if (gamepad.y)
+            this.angleFromDriver += heading;
+
+        if(multiplier != 1){
+            rightX = Math.signum(gamepad.right_stick_x) * Math.pow(gamepad.right_stick_x, multiplier);
+            leftX = Math.signum(gamepad.left_stick_x) * Math.pow(gamepad.left_stick_x, multiplier);
+            leftY = Math.signum(gamepad.left_stick_y) * Math.pow(gamepad.left_stick_y, multiplier);
+        }
+        else{
+            rightX = gamepad.right_stick_x;
+            leftX = gamepad.left_stick_x;
+            leftY = gamepad.left_stick_y;
+        }
 
         jTheta = Math.atan2(-leftY,leftX);
         jp = Math.sqrt(leftX * leftX + leftY * leftY);
@@ -109,14 +110,21 @@ public class DriveClass {
     }
 
     public void RCDrive(int multiplier) {
-        double rightX = Math.signum(gamepad.right_stick_x)*Math.pow(gamepad.right_stick_x,multiplier);
-        double leftX = Math.signum(gamepad.left_stick_x)*Math.pow(gamepad.left_stick_x,multiplier);
-        double leftY = Math.signum(gamepad.left_stick_y)*Math.pow(gamepad.left_stick_y,multiplier);
+        if(multiplier != 1){
+            rightX = Math.signum(gamepad.right_stick_x) * Math.pow(gamepad.right_stick_x, multiplier);
+            leftX = Math.signum(gamepad.left_stick_x) * Math.pow(gamepad.left_stick_x, multiplier);
+            leftY = Math.signum(gamepad.left_stick_y) * Math.pow(gamepad.left_stick_y, multiplier);
+        }
+        else{
+            rightX = gamepad.right_stick_x;
+            leftX = gamepad.left_stick_x;
+            leftY = gamepad.left_stick_y;
+        }
 
-        double fl = gamepad.left_stick_y + gamepad.left_stick_x - gamepad.right_stick_x;
-        double fr = gamepad.left_stick_y - gamepad.left_stick_x + gamepad.right_stick_x;
-        double bl = gamepad.left_stick_y - gamepad.left_stick_x - gamepad.right_stick_x;
-        double br = gamepad.left_stick_y + gamepad.left_stick_x + gamepad.right_stick_x;
+        double bl = leftY + leftX - rightX;
+        double br = leftY - leftX + rightX;
+        double fl = leftY - leftX - rightX;
+        double fr = leftY + leftX + rightX;
 
         drive(
                 fl,fr,bl,br

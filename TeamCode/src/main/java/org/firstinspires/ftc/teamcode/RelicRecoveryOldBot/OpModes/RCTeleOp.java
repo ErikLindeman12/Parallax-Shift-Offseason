@@ -17,8 +17,8 @@ import org.firstinspires.ftc.teamcode.RelicRecoveryOldBot.Subsystems.RobotClass;
 - Possible Improvements:
  */
 
-@TeleOp(name = "Holonomic FC TeleOp", group = "Holonomic")
-public class FCTeleOp extends OpMode
+@TeleOp(name = "Holonomic RC TeleOp", group = "Holonomic")
+public class RCTeleOp extends OpMode
 {
     RobotClass robot;
 
@@ -34,7 +34,7 @@ public class FCTeleOp extends OpMode
     @Override
     public void loop()
     {
-        robot.driveclass.FCDrive(multiplier,Math.PI);
+        robot.driveclass.RCDrive(multiplier);
         robot.intakeclass.Intake();
         robot.flipperclass.Flipper();
 

@@ -11,9 +11,22 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class RobotClass
 {
-    public DriveFunctionClass driveclass;
+    public DriveClass driveclass;
+    public IntakeClass intakeclass;
+    public JewelClass jewelclass;
+    public FlipperClass flipperclass;
+    public VuforiaClass vuforiaclass;
 
     public RobotClass(HardwareMap hwmap,Gamepad gamepad,Telemetry telemetry) {
-        driveclass = new DriveFunctionClass(hwmap,gamepad,telemetry);
+        driveclass = new DriveClass(hwmap,gamepad,telemetry);
+        intakeclass = new IntakeClass(hwmap,gamepad,telemetry);
+        jewelclass = new JewelClass(hwmap,telemetry);
+        flipperclass = new FlipperClass(hwmap,gamepad,telemetry);
+        //vuforiaclass = new VuforiaClass(hwmap,telemetry);
+    }
+
+    public void initializeServos(){
+        jewelclass.initialize();
+        flipperclass.initialize();
     }
 }
