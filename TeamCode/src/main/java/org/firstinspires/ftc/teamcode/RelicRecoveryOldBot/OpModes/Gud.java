@@ -11,9 +11,9 @@ import org.firstinspires.ftc.teamcode.RelicRecoveryOldBot.Subsystems.RobotClass;
 import org.firstinspires.ftc.teamcode.RelicRecoveryOldBot.genlib.CloseableVuforiaLocalizer;
 
 
-@Autonomous(name = "Blue Close", group = "Autonomous")
+@Autonomous(name = "Use this", group = "Autonomous")
 
-public class Blue_Close extends LinearOpMode {
+public class Gud extends LinearOpMode {
 
     RobotClass robot;
 
@@ -55,8 +55,8 @@ public class Blue_Close extends LinearOpMode {
         sleep(800);
         currentphase = currentPhase.DRIVE_TO_CRYPTO;
 
-        robot.driveclass.drive(.1,.1,.1,.1);
-        sleep(800);
+        robot.driveclass.drive(1,1,1,1);
+        sleep(150);
         robot.driveclass.brake();
 
         /*robot.driveclass.drive(.2,-.3,-.2,.3);

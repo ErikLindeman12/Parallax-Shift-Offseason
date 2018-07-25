@@ -52,7 +52,7 @@ public class JewelClass
     }
 
     public String scanColor(){
-        if(color.red()>color.blue())
+        if(color.red()> color.blue())
             return "RED";
         else
             return "BLUE";

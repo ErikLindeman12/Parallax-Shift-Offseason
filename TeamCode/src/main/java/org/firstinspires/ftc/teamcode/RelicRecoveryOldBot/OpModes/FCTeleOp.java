@@ -34,7 +34,7 @@ public class FCTeleOp extends OpMode
     @Override
     public void loop()
     {
-        robot.driveclass.FCDrive(multiplier,Math.PI);
+        robot.driveclass.FCDrive(multiplier,0);
         robot.intakeclass.Intake();
         robot.flipperclass.Flipper();
 

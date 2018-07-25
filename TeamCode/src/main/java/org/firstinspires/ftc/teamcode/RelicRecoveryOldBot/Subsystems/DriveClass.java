@@ -28,6 +28,7 @@ public class DriveClass {
     private double angleFromDriver;
     public double heading;
     public double DRIVE_POWER = 1.0f;
+    public double yRotation;
 
     private boolean begin = true;
 
@@ -41,8 +42,8 @@ public class DriveClass {
         backLeft = hardwareMap.dcMotor.get("backLeft");
         backRight = hardwareMap.dcMotor.get("backRight");
 
-        frontLeft.setDirection(DcMotor.Direction.REVERSE);
-        backLeft.setDirection(DcMotor.Direction.REVERSE);
+        frontRight.setDirection(DcMotor.Direction.REVERSE);
+        backRight.setDirection(DcMotor.Direction.REVERSE);
 
         InitializeGyro();
     }
@@ -70,6 +71,8 @@ public class DriveClass {
         else
             heading = heading + 2 * Math.PI;
         telemetry.addData("Gyro Heading",heading);
+
+        yRotation = gyro.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX).secondAngle;
     }
 
 
@@ -99,10 +102,10 @@ public class DriveClass {
             jp = 1;
         theta = (jTheta + angleFromDriver - heading);
 
-        double fl = (Math.sin(theta) + Math.cos(theta)) * jp / 2 - rightX;
-        double fr = (Math.sin(theta) - Math.cos(theta)) * jp / 2 + rightX;
-        double bl = (Math.sin(theta) - Math.cos(theta)) * jp / 2 - rightX;
-        double br = (Math.sin(theta) + Math.cos(theta)) * jp / 2 + rightX;
+        double fl = (Math.sin(theta) + Math.cos(theta)) * jp / 2 + rightX;
+        double fr = (Math.sin(theta) - Math.cos(theta)) * jp / 2 - rightX;
+        double bl = (Math.sin(theta) - Math.cos(theta)) * jp / 2 + rightX;
+        double br = (Math.sin(theta) + Math.cos(theta)) * jp / 2 - rightX;
 
         drive(
                 fl,fr,bl,br
@@ -120,11 +123,14 @@ public class DriveClass {
             leftX = gamepad.left_stick_x;
             leftY = gamepad.left_stick_y;
         }
-
-        double bl = leftY + leftX - rightX;
-        double br = leftY - leftX + rightX;
-        double fl = leftY - leftX - rightX;
-        double fr = leftY + leftX + rightX;
+        if(gamepad.dpad_down)
+            DRIVE_POWER = .4;
+        else
+            DRIVE_POWER = 1;
+        double bl = -leftY - leftX + rightX;
+        double br = -leftY + leftX - rightX;
+        double fl = -leftY + leftX + rightX;
+        double fr = -leftY - leftX - rightX;
 
         drive(
                 fl,fr,bl,br
@@ -153,6 +159,17 @@ public class DriveClass {
         frontRight.setPower(powerfr);
         backLeft.setPower(powerbl);
         backRight.setPower(powerbr);
+    }
+
+    public void resetEncoders(){
+        frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
 

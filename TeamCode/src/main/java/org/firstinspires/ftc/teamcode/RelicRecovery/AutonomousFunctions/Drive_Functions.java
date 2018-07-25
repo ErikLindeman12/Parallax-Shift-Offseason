@@ -35,11 +35,17 @@ public class Drive_Functions
         LastTime = System.currentTimeMillis();
         LastError = 0;
         Integral = 0;
-        while(error>.1 || begin){
-            if(begin)
-                begin = false;
+        error = 0;
+        LastTime = System.currentTimeMillis();
+        LastError = 0;
+        Integral = 0;
+        do{
             robot.driveclass.updateGyro();
-            error = angle-robot.driveclass.heading;
+            error = (angle-robot.driveclass.heading);
+            error = (error +360)%360;
+            if (error > 180) {
+                error -= 360;
+            }
             Time = System.currentTimeMillis()-LastTime;
             Integral += error * Time;
             Derivative = (error-LastError)/Time;
@@ -47,7 +53,7 @@ public class Drive_Functions
             LastTime = System.currentTimeMillis();
             LastError = error;
             robot.driveclass.drive(-currentDrivePower,currentDrivePower,-currentDrivePower,currentDrivePower);
-        }
+        }while(error>.1 || begin);
     }
     public void strafeDistace(double direction,double power,int distance){
         robot.driveclass.updateGyro();
