@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.RelicRecoveryOldBot.Subsystems;
+package org.firstinspires.ftc.teamcode.GeneralRobot.subsystems;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
@@ -14,7 +14,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
  * Created by Brown on 4/24/2018.
  */
 
-public class DriveClass {
+public class MecanumDrive {
 
     private HardwareMap hardwareMap;
     public Telemetry telemetry;
@@ -25,14 +25,19 @@ public class DriveClass {
 
     private double jp,jTheta,theta;
     private double leftY,leftX,rightX;
-    private double angleFromDriver;
+    public double angleFromDriver;
     public double heading;
     public double DRIVE_POWER = 1.0f;
     public double yRotation;
 
     private boolean begin = true;
 
-    public DriveClass(HardwareMap hwmap,Gamepad gamepad,Telemetry telemetry) {
+    public enum encoderMode{
+        runToPosition,runUsingEncoders,runWIthoutEncoders
+    }
+    public encoderMode mecanumEncoderMode;
+
+    public MecanumDrive(HardwareMap hwmap, Gamepad gamepad, Telemetry telemetry) {
         this.hardwareMap = hwmap;
         this.gamepad = gamepad;
         this.telemetry = telemetry;
@@ -48,19 +53,36 @@ public class DriveClass {
         InitializeGyro();
     }
 
-
-    private double clipValue(double value) {
-        if (value > DRIVE_POWER || value < -DRIVE_POWER)
-            return ((Math.abs(value) / value) * DRIVE_POWER);
-        else
-            return value;
+    public double[] getThreshHold(double[] powers){
+        double maxPower = 0;
+        for(double power : powers){
+            if(Math.abs(power)>maxPower)
+                maxPower = power;
+        }
+        for(int i=0;i<powers.length;i++){
+            powers[i] = powers[i]/(maxPower*DRIVE_POWER);
+        }
+        return powers;
     }
 
-    public void drive(double fl, double fr, double bl, double br) {
-        frontLeft.setPower(clipValue(fl));
-        frontRight.setPower(clipValue(fr));
-        backLeft.setPower(clipValue(bl));
-        backRight.setPower(clipValue(br));
+    public void drive(double[] powers) {
+        double[] drivePowers = getThreshHold(powers);
+        frontLeft.setPower(drivePowers[0]);
+        frontRight.setPower(drivePowers[1]);
+        backLeft.setPower(drivePowers[2]);
+        backRight.setPower(drivePowers[3]);
+    }
+
+    public void InitializeGyro() {
+        gyro = hardwareMap.get(BNO055IMU.class, "imu");
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
+        parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        parameters.calibrationDataFile = "AdafruitIMUCalibration.json";
+        parameters.loggingEnabled = true;
+        parameters.loggingTag = "IMU";
+        parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
+        gyro.initialize(parameters);
     }
 
     public void updateGyro() {
@@ -74,7 +96,6 @@ public class DriveClass {
 
         yRotation = gyro.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX).secondAngle;
     }
-
 
     public void FCDrive(int multiplier, double angleFromDriver) {
         if(begin)
@@ -107,9 +128,8 @@ public class DriveClass {
         double bl = (Math.sin(theta) - Math.cos(theta)) * jp / 2 + rightX;
         double br = (Math.sin(theta) + Math.cos(theta)) * jp / 2 - rightX;
 
-        drive(
-                fl,fr,bl,br
-        );
+        double[] drivePowers = {fl,fr,bl,br};
+        drive(drivePowers);
     }
 
     public void RCDrive(int multiplier) {
@@ -132,16 +152,24 @@ public class DriveClass {
         double fl = -leftY + leftX + rightX;
         double fr = -leftY - leftX - rightX;
 
-        drive(
-                fl,fr,bl,br
-        );
+        double[] drivePowers = {fl,fr,bl,br};
+        drive(drivePowers);
     }
 
-    public void brake() {
-        frontLeft.setPower(0);
-        frontRight.setPower(0);
-        backLeft.setPower(0);
-        backRight.setPower(0);
+    public void useEncoders(){
+        frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        mecanumEncoderMode = encoderMode.runUsingEncoders;
+    }
+
+    public void useNoEncoders(){
+        frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        mecanumEncoderMode = encoderMode.runWIthoutEncoders;
     }
 
     public void setDriveEncoders(double powerfl, double powerfr, double powerbl, double powerbr, int fl, int fr, int bl, int br) {
@@ -172,16 +200,22 @@ public class DriveClass {
         backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
+    public void brake() {
+        double[] drivePowers = {0,0,0,0};
+        drive(drivePowers);
+    }
 
-    public void InitializeGyro() {
-        gyro = hardwareMap.get(BNO055IMU.class, "imu");
-        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-        parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
-        parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-        parameters.calibrationDataFile = "AdafruitIMUCalibration.json";
-        parameters.loggingEnabled = true;
-        parameters.loggingTag = "IMU";
-        parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
-        gyro.initialize(parameters);
+    public void restistOnBrake(){
+        frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+    }
+
+    public void floatOnBrake(){
+        frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
     }
 }
