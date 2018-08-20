@@ -24,7 +24,7 @@ public class TankDrive {
     public BNO055IMU gyro;
 
     public double heading;
-    public double DRIVE_POWER = 1.0;
+    public double DRIVE_POWER = .3;
     public double leftPower,rightPower;
 
     public enum encoderMode{
@@ -57,7 +57,7 @@ public class TankDrive {
                 maxPower = power;
         }
         for(int i=0;i<powers.length;i++){
-            powers[i] = powers[i]/(maxPower*DRIVE_POWER);
+            powers[i] = powers[i]/Math.abs((maxPower*DRIVE_POWER));
         }
         return powers;
     }

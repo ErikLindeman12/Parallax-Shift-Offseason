@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.GeneralRobot.genlib;
 
-public class PID_Class {
+public class PIDClass {
     public double KP,KI,KD,currentAngle;
     double LastTime = 0;
     double Integral = 0;
@@ -8,13 +8,13 @@ public class PID_Class {
     double error;
     public double currentDrivePower;
 
-    public PID_Class(double KP){
+    public PIDClass(double KP){
         this.KP=KP;
         this.KI=0;
         this.KD=0;
     }
 
-    public PID_Class(double KP,double KI,double KD){
+    public PIDClass(double KP, double KI, double KD){
         this.KP=KP;
         this.KI=KI;
         this.KD=KD;

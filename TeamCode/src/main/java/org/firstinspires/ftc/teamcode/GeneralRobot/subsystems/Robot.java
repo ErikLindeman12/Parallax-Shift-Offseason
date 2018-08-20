@@ -12,11 +12,11 @@ import org.firstinspires.ftc.teamcode.GeneralRobot.genlib.VuforiaClass;
 
 public class Robot
 {
-    public MecanumDrive driveclass;
+    public TankDrive driveclass;
     public VuforiaClass vuforiaclass;
 
     public Robot(HardwareMap hwmap, Gamepad gamepad, Telemetry telemetry) {
-        driveclass = new MecanumDrive(hwmap,gamepad,telemetry);
+        driveclass = new TankDrive(hwmap,gamepad,telemetry);
         vuforiaclass = new VuforiaClass(hwmap,telemetry);
     }
 
