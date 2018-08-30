@@ -60,7 +60,7 @@ public class MecanumDrive {
                 maxPower = power;
         }
         for(int i=0;i<powers.length;i++){
-            powers[i] = powers[i]/(maxPower*DRIVE_POWER);
+            powers[i] = powers[i]*DRIVE_POWER/Math.abs((maxPower));
         }
         return powers;
     }
@@ -76,7 +76,7 @@ public class MecanumDrive {
     public void InitializeGyro() {
         gyro = hardwareMap.get(BNO055IMU.class, "imu");
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-        parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
+        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
         parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
         parameters.calibrationDataFile = "AdafruitIMUCalibration.json";
         parameters.loggingEnabled = true;
@@ -89,9 +89,9 @@ public class MecanumDrive {
         heading = gyro.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX).firstAngle;
 
         if (heading > 0)
-            heading = heading + 0;
+            heading = heading;
         else
-            heading = heading + 2 * Math.PI;
+            heading = heading + 360;
         telemetry.addData("Gyro Heading",heading);
 
         yRotation = gyro.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX).secondAngle;
@@ -121,7 +121,7 @@ public class MecanumDrive {
         jp = Math.sqrt(leftX * leftX + leftY * leftY);
         if (jp > 1)
             jp = 1;
-        theta = (jTheta + angleFromDriver - heading);
+        theta = Math.toRadians(jTheta + angleFromDriver - heading);
 
         double fl = (Math.sin(theta) + Math.cos(theta)) * jp / 2 + rightX;
         double fr = (Math.sin(theta) - Math.cos(theta)) * jp / 2 - rightX;

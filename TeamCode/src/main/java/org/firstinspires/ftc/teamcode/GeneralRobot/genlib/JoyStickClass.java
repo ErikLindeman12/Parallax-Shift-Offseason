@@ -4,47 +4,47 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 
 public class JoyStickClass {
     public Gamepad gamepad;
-    public boolean rightStick,leftStick;
-    public boolean rightTrigger,leftTrigger;
-    public boolean leftButton,rightButton;
-    public boolean aButton,bButton,xButton,yButton;
-    public boolean dPadUp,dPadDown,dPadRight,dPadLeft;
+    public boolean rStick,lStick;
+    public boolean rTrig,lTrig;
+    public boolean lBut,rBut;
+    public boolean a,b,x,y;
+    public boolean up,down,right,left;
     public boolean start;
 
     public JoyStickClass(Gamepad gamepad){
         this.gamepad = gamepad;
     }
 
-    public void runJoystick(){
+    public void update(){
         if(gamepad.right_stick_button)
-            rightStick = true;
+            rStick = true;
         if(gamepad.left_stick_button)
-            leftStick = true;
+            lStick = true;
         if(gamepad.right_bumper)
-            rightButton = true;
+            rBut = true;
         if(gamepad.left_bumper)
-            leftButton = true;
+            lBut = true;
         if(gamepad.right_trigger != 0)
-            rightTrigger = true;
+            rTrig = true;
         if(gamepad.left_trigger != 0)
-            leftTrigger = true;
+            lTrig = true;
         if(gamepad.a)
-            aButton = true;
+            a = true;
         if(gamepad.b)
-            bButton = true;
+            b = true;
         if(gamepad.x)
-            xButton = true;
+            x = true;
         if(gamepad.y)
-            yButton = true;
+            y = true;
         if(gamepad.start)
             start = true;
         if(gamepad.dpad_down)
-            dPadDown = true;
+            down = true;
         if(gamepad.dpad_up)
-            dPadUp = true;
+            up = true;
         if(gamepad.dpad_left)
-            dPadLeft = true;
+            left = true;
         if(gamepad.dpad_right)
-            dPadRight = true;
+            right = true;
     }
 }

@@ -61,7 +61,7 @@ public class PIDClass {
     public void setPIDPower(double destinationAngle, double currentAngle){
         this.currentAngle = currentAngle;
         error = (destinationAngle-currentAngle);
-        error = (error +360)%360;
+            error = (error+360)%360;
         if (error > 180)
             error -= 360;
         double Time = System.currentTimeMillis()-LastTime;
@@ -81,14 +81,14 @@ public class PIDClass {
     }
 
     public boolean checkErrorLinear(double errorThreshhold){
-        if(error>errorThreshhold)
+        if(Math.abs(error)>errorThreshhold)
             return true;
         else
             return false;
     }
 
     public boolean checkErrorScalar(double errorThreshhold){
-        if((error/(2*Math.PI))>errorThreshhold)
+        if((Math.abs(error)/360)>errorThreshhold)
             return true;
         else
             return false;

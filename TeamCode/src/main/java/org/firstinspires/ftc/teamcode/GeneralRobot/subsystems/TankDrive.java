@@ -24,7 +24,7 @@ public class TankDrive {
     public BNO055IMU gyro;
 
     public double heading;
-    public double DRIVE_POWER = .3;
+    public double DRIVE_POWER = .4;
     public double leftPower,rightPower;
 
     public enum encoderMode{
@@ -57,7 +57,7 @@ public class TankDrive {
                 maxPower = power;
         }
         for(int i=0;i<powers.length;i++){
-            powers[i] = powers[i]/Math.abs((maxPower*DRIVE_POWER));
+            powers[i] = powers[i]*DRIVE_POWER/Math.abs(maxPower);
         }
         return powers;
     }
@@ -73,7 +73,7 @@ public class TankDrive {
     public void InitializeGyro() {
         gyro = hardwareMap.get(BNO055IMU.class, "imu");
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-        parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
+        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
         parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
         parameters.calibrationDataFile = "AdafruitIMUCalibration.json";
         parameters.loggingEnabled = true;
@@ -86,9 +86,9 @@ public class TankDrive {
         heading = gyro.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX).firstAngle;
 
         if (heading > 0)
-            heading = heading + 0;
+            heading = heading;
         else
-            heading = heading + 2 * Math.PI;
+            heading = heading + 360;
         telemetry.addData("Gyro Heading",heading);
     }
 
