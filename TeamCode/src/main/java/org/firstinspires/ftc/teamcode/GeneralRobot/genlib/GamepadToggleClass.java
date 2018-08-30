@@ -128,14 +128,5 @@ public class GamepadToggleClass extends JoyStickClass {
         }
         else if(!lTrig && !toggleLTrig)
             toggleLTrig = true;
-
-
-
-
-
-
-
-
-
     }
 }
