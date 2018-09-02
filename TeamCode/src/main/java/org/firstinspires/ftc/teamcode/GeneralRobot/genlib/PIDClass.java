@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.GeneralRobot.genlib;
 
 public class PIDClass {
-    public double KP,KI,KD,currentAngle;
+    public double KP,KI,KD,current;
     double LastTime = 0;
     double Integral = 0;
     double  LastError = 0;
@@ -58,12 +58,14 @@ public class PIDClass {
         return KD;
     }
 
-    public void setPIDPower(double destinationAngle, double currentAngle){
-        this.currentAngle = currentAngle;
-        error = (destinationAngle-currentAngle);
-            error = (error+360)%360;
-        if (error > 180)
-            error -= 360;
+    public void setPIDPower(double desired, double current,boolean isAngular){
+        this.current = current;
+        error = (desired-current);
+        if(isAngular) {
+            error = (error + 360) % 360;
+            if (error > 180)
+                error -= 360;
+        }
         double Time = System.currentTimeMillis()-LastTime;
         Integral += error * Time;
         double Derivative = (error-LastError)/Time;

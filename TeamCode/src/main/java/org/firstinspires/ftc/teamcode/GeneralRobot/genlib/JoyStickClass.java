@@ -10,41 +10,48 @@ public class JoyStickClass {
     public boolean a,b,x,y;
     public boolean up,down,right,left;
     public boolean start;
+    public double lastLoop;
+    boolean goAnyways = true;
 
     public JoyStickClass(Gamepad gamepad){
         this.gamepad = gamepad;
     }
 
     public void update(){
-        if(gamepad.right_stick_button)
-            rStick = true;
-        if(gamepad.left_stick_button)
-            lStick = true;
-        if(gamepad.right_bumper)
-            rBut = true;
-        if(gamepad.left_bumper)
-            lBut = true;
-        if(gamepad.right_trigger != 0)
+        if(System.currentTimeMillis()-lastLoop > 10 || goAnyways) {
+            goAnyways = false;
+            if (gamepad.right_stick_button)
+                rStick = true;
+            if (gamepad.left_stick_button)
+                lStick = true;
+            if (gamepad.right_bumper)
+                rBut = true;
+            if (gamepad.left_bumper)
+                lBut = true;
+            if (gamepad.a)
+                a = true;
+            if (gamepad.b)
+                b = true;
+            if (gamepad.x)
+                x = true;
+            if (gamepad.y)
+                y = true;
+            if (gamepad.start)
+                start = true;
+            if (gamepad.dpad_down)
+                down = true;
+            if (gamepad.dpad_up)
+                up = true;
+            if (gamepad.dpad_left)
+                left = true;
+            if (gamepad.dpad_right)
+                right = true;
+        }
+        if (gamepad.right_trigger != 0)
             rTrig = true;
-        if(gamepad.left_trigger != 0)
+        if (gamepad.left_trigger != 0)
             lTrig = true;
-        if(gamepad.a)
-            a = true;
-        if(gamepad.b)
-            b = true;
-        if(gamepad.x)
-            x = true;
-        if(gamepad.y)
-            y = true;
-        if(gamepad.start)
-            start = true;
-        if(gamepad.dpad_down)
-            down = true;
-        if(gamepad.dpad_up)
-            up = true;
-        if(gamepad.dpad_left)
-            left = true;
-        if(gamepad.dpad_right)
-            right = true;
+        
+        lastLoop = System.currentTimeMillis();
     }
 }

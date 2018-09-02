@@ -21,9 +21,7 @@ public class TestPID extends LinearOpMode{
         waitForStart();
         do {
             robotclass.driveclass.updateGyro();
-            telemetry.addData("heading",robotclass.driveclass.heading);
-            telemetry.update();
-            drivePID.setPIDPower(140, robotclass.driveclass.heading);
+            drivePID.setPIDPower(140, robotclass.driveclass.heading,true);
             double[] drivePowers = {drivePID.getPIDPower(), -drivePID.getPIDPower(), drivePID.getPIDPower(), -drivePID.getPIDPower()};
             robotclass.driveclass.drive(drivePowers);
         }while(drivePID.checkErrorLinear(.2) && opModeIsActive());

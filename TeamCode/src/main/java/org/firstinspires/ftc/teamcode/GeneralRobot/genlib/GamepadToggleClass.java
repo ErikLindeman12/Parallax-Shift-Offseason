@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.GeneralRobot.genlib;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
 public class GamepadToggleClass extends JoyStickClass {
+
     public boolean toggleRStick,toggleLStick = true;
     public boolean toggleRTrig,toggleLTrig = true;
     public boolean toggleLBut,toggleRBut = true;
