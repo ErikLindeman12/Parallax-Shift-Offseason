@@ -51,7 +51,7 @@ public class JoyStickClass {
             rTrig = true;
         if (gamepad.left_trigger != 0)
             lTrig = true;
-        
+
         lastLoop = System.currentTimeMillis();
     }
 }
