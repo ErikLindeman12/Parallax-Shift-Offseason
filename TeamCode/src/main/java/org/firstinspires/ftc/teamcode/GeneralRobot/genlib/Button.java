@@ -20,6 +20,5 @@ public class Button {
     }
 
     public void update(){
-
     }
 }
