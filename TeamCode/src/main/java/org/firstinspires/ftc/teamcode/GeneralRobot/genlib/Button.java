@@ -4,21 +4,25 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 
 public class Button {
     public boolean gamepadValue;
-    public boolean toggle;
-    public boolean toggleBool;
+    public boolean toggle = true;
+    public boolean toggleBool = true;
 
-    public Button(boolean gamepadValue,) {
+    public Button(boolean gamepadValue) {
         this.gamepadValue = gamepadValue;
     }
 
-    public boolean getToggle(){
-        return toggle;
+    public void updateVar(boolean gamepadValue){
+        this.gamepadValue = gamepadValue;
     }
 
-    public boolean getToggleBool(){
-        return toggleBool;
-    }
+    public void checkToggle(boolean gamepadValue){
+        this.gamepadValue = gamepadValue;
 
-    public void update(){
+        if(toggle &&  gamepadValue){
+            toggle = false;
+            toggleBool = !toggleBool;
+        }
+        else if(!toggle && !gamepadValue)
+            toggle = true;
     }
 }
