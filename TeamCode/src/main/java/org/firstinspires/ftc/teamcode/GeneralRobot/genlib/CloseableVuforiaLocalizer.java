@@ -33,7 +33,6 @@ import org.firstinspires.ftc.robotcore.internal.vuforia.VuforiaLocalizerImpl;
  *
  *     To close vuforia, simply call vuforia.close();
  */
-
 public class CloseableVuforiaLocalizer extends VuforiaLocalizerImpl {
     boolean closed = false;
     public CloseableVuforiaLocalizer(Parameters parameters) {
