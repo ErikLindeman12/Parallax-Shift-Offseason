@@ -3,9 +3,9 @@ package org.firstinspires.ftc.teamcode.GeneralRobot.genlib;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
 public class Button {
-    public boolean gamepadValue;
-    public boolean toggle = true;
-    public boolean toggleBool = true;
+    boolean gamepadValue;
+    boolean toggle = true;
+    boolean toggleBool = true;
 
     public Button(boolean gamepadValue) {
         this.gamepadValue = gamepadValue;
@@ -24,5 +24,13 @@ public class Button {
         }
         else if(!toggle && !gamepadValue)
             toggle = true;
+    }
+
+    public boolean getToggle(){
+        return toggleBool;
+    }
+
+    public boolean getgamepadVal(){
+        return gamepadValue;
     }
 }

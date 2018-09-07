@@ -1,12 +1,14 @@
 package org.firstinspires.ftc.teamcode.GeneralRobot.genlib;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class PIDClass {
-    public double KP,KI,KD,current;
-    double LastTime = 0;
-    double Integral = 0;
-    double  LastError = 0;
+    double KP,KI,KD;
+    double lastTime = 0;
+    double integral = 0;
+    double  lastError;
     double error;
-    public double currentDrivePower;
+    double currentDrivePower;
+    ElapsedTime timer;
 
     public PIDClass(double KP){
         this.KP=KP;
@@ -23,9 +25,9 @@ public class PIDClass {
 
     public void resetCoefficients()
     {
-        LastTime = 0;
-        Integral = 0;
-        LastError = 0;
+        lastTime = 0;
+        integral = 0;
+        lastError = 0;
     }
 
     public void changeCoefficients(double KP,double KI, double KD){
@@ -59,19 +61,22 @@ public class PIDClass {
     }
 
     public void setPIDPower(double desired, double current,boolean isAngular){
-        this.current = current;
+        if(lastTime == -1){
+            timer.reset();
+            lastTime = 0;
+        }
         error = (desired-current);
         if(isAngular) {
             error = (error + 360) % 360;
             if (error > 180)
                 error -= 360;
         }
-        double Time = System.currentTimeMillis()-LastTime;
-        Integral += error * Time;
-        double Derivative = (error-LastError)/Time;
-        currentDrivePower = error * KP + Integral * KI + Derivative * KD;
-        LastTime = System.currentTimeMillis();
-        LastError = error;
+        double Time = timer.seconds()-lastTime;
+        integral += error * Time;
+        double Derivative = (error-lastError)/Time;
+        currentDrivePower = error * KP + integral * KI + Derivative * KD;
+        lastTime = timer.seconds();
+        lastError = error;
     }
 
     public double getPIDPower(){
