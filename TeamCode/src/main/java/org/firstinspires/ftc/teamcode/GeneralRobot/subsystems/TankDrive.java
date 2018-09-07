@@ -1,4 +1,5 @@
 package org.firstinspires.ftc.teamcode.GeneralRobot.subsystems;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
@@ -26,6 +27,11 @@ public class TankDrive {
     public double heading;
     public double DRIVE_POWER = .4;
     public double leftPower,rightPower;
+    private static final double WHEEL_RADIUS = 1/6;
+    double maxAccel = 1; //Feet/sec^2
+    double maxVelocity = .8; //Feet/sec
+
+    ElapsedTime timer;
 
     public enum encoderMode{
         runToPosition,runUsingEncoders,runWIthoutEncoders
@@ -47,6 +53,7 @@ public class TankDrive {
         backRight.setDirection(DcMotor.Direction.REVERSE);
 
         InitializeGyro();
+        timer.reset();
     }
 
 
@@ -170,36 +177,31 @@ public class TankDrive {
         backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
-    //VERY BAD DOESN'T WORK IGNORE
-    /*public void motionProfiling(double destinationDistance){
+    public void motionProfiling(double destinationDistance){
+        double accelTime = maxVelocity/maxAccel;
+        double accelDistance = (.5*maxAccel*accelTime*accelTime)*268.8*WHEEL_RADIUS/Math.PI; //Pretend this is converted to encoder value units
         double currentVelocity = 0;
-        double startingLeftPosition = (frontLeft.getCurrentPosition()+frontRight.getCurrentPosition())/2;
-        double lastTime = 0;
-        double MAX_ACCELERATION = 1;
-        double MAX_VELOCITY = .8;
-        double accelerateTime = MAX_VELOCITY/MAX_ACCELERATION;
-        //in final version change this to angular to work with encoders
-        double accelerationDistance = 1/2*MAX_ACCELERATION*Math.pow(accelerateTime,2)+accelerateTime*MAX_VELOCITY;
-        //supposing accelerationDistance is converted to angular
-        if(2*accelerationDistance<destinationDistance){
-            while(currentVelocity < MAX_VELOCITY){
-                double velocityChange = (System.currentTimeMillis()*1000-lastTime)*MAX_ACCELERATION;
-                currentVelocity +=velocityChange;
-                double[] drivePowers = {currentVelocity,currentVelocity};
-                drive(drivePowers);
-            }
-            while((frontLeft.getCurrentPosition()+frontRight.getCurrentPosition())/2-startingLeftPosition<destinationDistance-accelerationDistance){
-                double[] drivePowers = {MAX_VELOCITY,MAX_VELOCITY};
-                drive(drivePowers);
-            }
-            while(currentVelocity > 0){
-                double velocityChange = -(System.currentTimeMillis()*1000-lastTime)*MAX_ACCELERATION;
-                currentVelocity +=velocityChange;
-                double[] drivePowers = {currentVelocity,currentVelocity};
-                drive(drivePowers);
-            }
-            brake();
+        double startingTime = timer.seconds();
+        resetEncoders();
+
+        while(currentVelocity<.8 && destinationDistance/2<(frontLeft.getCurrentPosition()+frontRight.getCurrentPosition())/2){
+            currentVelocity = maxAccel*(timer.seconds()-startingTime);
+            double[] drivePowers = {1/maxVelocity*currentVelocity,1/maxVelocity*currentVelocity};
+            drive(drivePowers);
         }
 
-    }*/
+        while(destinationDistance-accelDistance>(frontLeft.getCurrentPosition()+frontRight.getCurrentPosition())/2){
+             double[] drivePowers = {1,1};
+            drive(drivePowers);
+        }
+        startingTime = System.currentTimeMillis()/1000;
+
+        while(destinationDistance>(frontLeft.getCurrentPosition()+frontRight.getCurrentPosition())/2){
+            currentVelocity = maxVelocity-maxAccel*(timer.seconds()/1000-startingTime);
+            double[] drivePowers = {1/maxVelocity*currentVelocity,1/maxVelocity*currentVelocity};
+            drive(drivePowers);
+        }
+        brake();
+
+    }
 }
