@@ -25,10 +25,10 @@ public class GamepadClass {
             begin = false;
             //Can just update the gamepad value if not using a toggle
             B.updateVar(gamepad.b);
-            X.updateVar(gamepad.y);
+            X.updateVar(gamepad.x);
             //Otherwise update the gamepad value and toggle value
             A.checkToggle(gamepad.a);
-            Y.updateVar(gamepad.x);
+            Y.updateVar(gamepad.y);
             LastTime = timer.milliseconds();
         }
     }
